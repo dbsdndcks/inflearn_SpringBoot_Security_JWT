@@ -15,8 +15,13 @@ public class User {
     private String password;
     private String email;
     private String role;
+
+    private String provider;
+    private String providerId;
+
     @CreationTimestamp
     private Timestamp createDate;
+
 
     public int getId() {
         return id;
@@ -64,5 +69,19 @@ public class User {
 
     public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
+                ", provider='" + provider + '\'' +
+                ", providerId='" + providerId + '\'' +
+                ", createDate=" + createDate +
+                '}';
     }
 }

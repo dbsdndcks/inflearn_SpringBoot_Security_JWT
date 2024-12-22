@@ -11,11 +11,13 @@ package Security_JWT.demo.config.auth;
 import Security_JWT.demo.model.User;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
-public class PrincipalDetails implements UserDetails {
+
+public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private User user;
 
@@ -24,6 +26,7 @@ public class PrincipalDetails implements UserDetails {
     }
 
     //해당 User의 권한을 리턴하는 곳!!
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collect = new ArrayList<>();
@@ -35,7 +38,6 @@ public class PrincipalDetails implements UserDetails {
         });
         return collect;
     }
-
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -63,10 +65,26 @@ public class PrincipalDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        
+
         //이기능은 휴면계정이냐 아니냐를 판단할수 있다 예를들어
         //우리 사이트가 1년동안 회원이 로그인을 안하면 휴면계정으로 두기로 함
         //현재 시간 - 로그인 시간 => 1년을 초과하면 return false; 로 설정하면됨
         return true;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+
+    /* OAuth2 오버라이드 */
+    @Override
+    public String getName() {
+        return "";
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return Map.of();
     }
 }
