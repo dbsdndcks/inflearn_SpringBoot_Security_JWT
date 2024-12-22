@@ -55,19 +55,10 @@ public class IndexController {
     }
 
     @GetMapping("/user")
-    public @ResponseBody String user() {
+    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         // 인증 정보를 가져오는 방법
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 인증되지 않은 사용자일 경우
-        if (authentication == null
-                || !((org.springframework.security.core.Authentication) authentication).isAuthenticated()) {
-            System.out.println("사용자는 인증되지 않았습니다.");
-        } else {
-            // 인증된 사용자 정보
-            System.out.println("인증된 사용자: " + authentication.getName());
-        }
-
+        System.out.println("principalDetails : " + principalDetails.getUser() );
         return "user";
     }
 

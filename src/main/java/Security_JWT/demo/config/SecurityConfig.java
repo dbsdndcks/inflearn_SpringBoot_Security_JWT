@@ -21,12 +21,14 @@ public class SecurityConfig {
     @Autowired
     private PrincipalOauth2UserService principalOauth2UserService;
 
+    /* 빈 과 빈 사이에 순환참조 때문에 에러발생 : 따로 클래스를 만들음
     // BCryptPasswordEncoder 빈 등록
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    */
+    
     // SecurityFilterChain 빈 등록
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
