@@ -2,6 +2,8 @@ package Security_JWT.demo.config.oauth;
 
 import Security_JWT.demo.config.auth.PrincipalDetails;
 import Security_JWT.demo.config.encoder.CustomBCryptPasswordEncoder;
+import Security_JWT.demo.config.oauth.provider.GoogleUserInfo;
+import Security_JWT.demo.config.oauth.provider.OAuth2UserInfo;
 import Security_JWT.demo.model.User;
 import Security_JWT.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,21 +31,31 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         System.out.println("getAccessToken : " + userRequest.getAccessToken());
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-
         //구글로그인 버튼 클릭 -> 구글로그인창 -> 로그인을 완료 -> CODE를 리턴 (OAuth-Clinet라이브러리) -> AccessToken요청
         //userRequest 정보 -> loadUser 함수 ->구글로부터 회원프로필 받아준다.
         System.out.println("getAttributes : " + oAuth2User.getAttributes());
 
-        String provider = userRequest.getClientRegistration().getClientId(); // google
-        String providerId = oAuth2User.getAttribute("sub");
+        OAuth2UserInfo oAuth2UserInfo = null;
+        if (userRequest.getClientRegistration().getRegistrationId().equals("google")) {
+            System.out.println("구글 로그인 요청");
+            oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+        }
+        if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
+            System.out.println("네이버 로그인 요청");
+            oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+        }
+
+        String provider = oAuth2UserInfo.getProvider();
+        String providerId = oAuth2UserInfo.getProviderId();
         String username = provider + "_" + providerId; //google_100355441559385471085
         String password = bCryptPasswordEncoder.encode("겟인데어");
-        String email = oAuth2User.getAttribute("email");
+        String email = oAuth2UserInfo.getEmail();
         String role = "ROLE_USER";
-
+        
+        
         User userEntity = userRepository.findByUsername(username);
         if (userEntity == null) {
-            System.out.println("구글 로그인이 최초입니다.");
+            System.out.println("로그인이 최초입니다.");
             userEntity = User.builder()
                     .username(username)
                     .password(password)
@@ -54,6 +66,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                     .build();
             userRepository.save(userEntity);
         }
+        
         System.out.println("구글로그인을 이미 한적 있습니다. 당신은 자동 회원가입이 되어있습니다");
         //회원가입을 강제로 진행해볼 예정
         return new PrincipalDetails(userEntity,oAuth2User.getAttributes());
