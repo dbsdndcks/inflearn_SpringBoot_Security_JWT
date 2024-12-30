@@ -3,9 +3,11 @@ package Security_JWT.demo.config.oauth;
 import Security_JWT.demo.config.auth.PrincipalDetails;
 import Security_JWT.demo.config.encoder.CustomBCryptPasswordEncoder;
 import Security_JWT.demo.config.oauth.provider.GoogleUserInfo;
+import Security_JWT.demo.config.oauth.provider.NaverUserInfo;
 import Security_JWT.demo.config.oauth.provider.OAuth2UserInfo;
 import Security_JWT.demo.model.User;
 import Security_JWT.demo.repository.UserRepository;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -42,7 +44,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         }
         if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
             System.out.println("네이버 로그인 요청");
-            oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+            oAuth2UserInfo = new NaverUserInfo((Map)oAuth2User.getAttributes().get("response"));
         }
 
         String provider = oAuth2UserInfo.getProvider();
