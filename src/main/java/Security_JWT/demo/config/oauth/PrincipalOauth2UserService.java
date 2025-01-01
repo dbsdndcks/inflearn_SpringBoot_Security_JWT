@@ -3,6 +3,7 @@ package Security_JWT.demo.config.oauth;
 import Security_JWT.demo.config.auth.PrincipalDetails;
 import Security_JWT.demo.config.encoder.CustomBCryptPasswordEncoder;
 import Security_JWT.demo.config.oauth.provider.GoogleUserInfo;
+import Security_JWT.demo.config.oauth.provider.KakaoUserInfo;
 import Security_JWT.demo.config.oauth.provider.NaverUserInfo;
 import Security_JWT.demo.config.oauth.provider.OAuth2UserInfo;
 import Security_JWT.demo.model.User;
@@ -45,6 +46,10 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
             System.out.println("네이버 로그인 요청");
             oAuth2UserInfo = new NaverUserInfo((Map)oAuth2User.getAttributes().get("response"));
+        }
+        if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
+            System.out.println("카카오 로그인 요청");
+            oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
         }
 
         String provider = oAuth2UserInfo.getProvider();
